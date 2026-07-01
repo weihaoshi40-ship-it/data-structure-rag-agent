@@ -30,9 +30,11 @@ def should_use_code_gen(question: str) -> bool:
 
 def should_use_exercise_gen(question: str) -> bool:
     lower = question.lower()
-    return any(keyword in question for keyword in EXERCISE_KEYWORDS) or any(
-        keyword in lower for keyword in ("quiz", "exercise")
-    )
+    if any(keyword in question for keyword in EXERCISE_KEYWORDS):
+        return True
+    if any(keyword in lower for keyword in ("quiz", "exercise")):
+        return True
+    return "题" in question and any(keyword in question for keyword in ("生成", "随机", "几道", "出", "设计"))
 
 
 def normalize_followup(question: str, chat_context: list[dict[str, str]]) -> str:
