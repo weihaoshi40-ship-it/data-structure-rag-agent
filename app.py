@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import html
 from pathlib import Path
+import re
 
 import streamlit as st
 
@@ -152,6 +153,30 @@ def render_retrieval_results(response) -> None:
         )
 
 
+def extract_code_blocks(markdown_text: str) -> list[tuple[str, str]]:
+    blocks: list[tuple[str, str]] = []
+    pattern = re.compile(r"```(\w+)?\s*\n(.*?)```", re.DOTALL)
+    for match in pattern.finditer(markdown_text or ""):
+        language = (match.group(1) or "text").strip().lower()
+        code = match.group(2).strip()
+        if code:
+            blocks.append((language, code))
+    return blocks
+
+
+def render_code_highlights(response) -> None:
+    if not response or response.tool_name != "code_gen":
+        st.info("代码生成后，这里会展示语法高亮代码块。")
+        return
+    blocks = extract_code_blocks(response.answer)
+    if not blocks:
+        st.warning("本轮代码生成结果中没有检测到 Markdown 代码块。")
+        return
+    for index, (language, code) in enumerate(blocks, start=1):
+        st.caption(f"代码块 {index} · {language}")
+        st.code(code, language=language)
+
+
 def main() -> None:
     ensure_project_dirs()
     init_state()
@@ -195,6 +220,9 @@ def main() -> None:
 
         st.subheader("检索结果")
         render_retrieval_results(response)
+
+        st.subheader("代码高亮")
+        render_code_highlights(response)
 
         if st.button("清空当前会话", use_container_width=True):
             st.session_state.messages = []

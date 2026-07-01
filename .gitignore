@@ -9,3 +9,4 @@ deliverables/
 *.log
 materials/*.pdf
 vector_store/
+~$*.docx

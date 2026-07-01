@@ -5,13 +5,14 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.agent import should_use_code_gen, normalize_followup
+from src.agent import should_use_code_gen, should_use_exercise_gen, normalize_followup
 from src.ingest import split_text
 
 
 def test_router():
     assert should_use_code_gen("请用 C++ 实现单链表逆置")
     assert not should_use_code_gen("什么是栈？它有哪些基本操作？")
+    assert should_use_exercise_gen("根据知识库生成几道选择题和填空题")
 
 
 def test_followup():
