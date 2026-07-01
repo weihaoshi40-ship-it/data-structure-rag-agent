@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.streamlit/secrets.toml
+deliverables/
+*.zip
+*.log
+materials/*.pdf
+vector_store/
