@@ -156,6 +156,8 @@ def main() -> None:
     ensure_project_dirs()
     init_state()
     config = load_config()
+    if not vector_store_exists() and list_material_files():
+        build_vector_store(config)
     render_header()
     render_sidebar(config)
 
